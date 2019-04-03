@@ -282,7 +282,7 @@ public class Controller implements Initializable {
         Node[][]buffer = playfield;
 
 
-        buffer[posY+_y][posX+x] = null;
+        buffer[posY][posX] = null;
 
 
         if (wallCollision(newX)) {
