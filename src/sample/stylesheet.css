@@ -1,0 +1,28 @@
+
+.main{
+    -fx-background-color: #FFFFFF;
+}
+
+.score{
+    -fx-font-size: 24px;
+    -fx-text-alignment: center;
+}
+
+.sidebarRight{
+    -fx-padding: 5px;
+    -fx-background-color: slategrey;
+}
+
+.playField{
+    -fx-background-color: antiquewhite;
+    -fx-border-style: solid;
+    -fx-border-color: black;
+}
+
+#left{
+    -fx-max-width: 100px;
+}
+
+#nextblocktext{
+    -fx-font-family: "Arial Black" ;
+}
