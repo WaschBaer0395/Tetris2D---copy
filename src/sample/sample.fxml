@@ -4,28 +4,34 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.text.Text?>
 
 <AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="714.0" prefWidth="536.0" styleClass="main" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <Pane fx:id="siderbarRight" layoutX="343.0" prefHeight="714.0" prefWidth="196.0" styleClass="sidebarRight">
          <children>
-            <Text fx:id="score" layoutX="63.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="score" text="SCORE" />
-            <Text fx:id="nextblocktext" layoutX="70.0" layoutY="143.0" strokeType="OUTSIDE" strokeWidth="0.0" text="NEXT BLOCK" />
-            <Pane fx:id="nextBlock" layoutY="166.0" prefHeight="196.0" prefWidth="196.0" />
+            <Text layoutX="63.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="score" text="SCORE" />
+            <Text fx:id="nextblocktext" layoutX="55.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" text="NEXT BLOCK" />
+            <GridPane fx:id="nextBlockPane" layoutX="52.0" layoutY="157.0">
+              <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+            </GridPane>
             <Button fx:id="down" layoutX="73.0" layoutY="631.0" minWidth="50.0" mnemonicParsing="false" onAction="#buttonAction" text="Down" />
             <Button fx:id="up" layoutX="73.0" layoutY="595.0" minWidth="50.0" mnemonicParsing="false" onAction="#buttonAction" text="Up" />
             <Button fx:id="left" layoutX="14.0" layoutY="631.0" minWidth="50.0" mnemonicParsing="false" onAction="#buttonAction" text="Left" />
             <Button fx:id="right" layoutX="132.0" layoutY="631.0" minWidth="50.0" mnemonicParsing="false" onAction="#buttonAction" text="Right" />
             <Button fx:id="rleft" layoutX="14.0" layoutY="675.0" minWidth="70.0" mnemonicParsing="false" text="turn Left" />
             <Button fx:id="rright" layoutX="112.0" layoutY="675.0" minWidth="70.0" mnemonicParsing="false" text="turn Right" />
-            <Button fx:id="start" layoutX="79.0" layoutY="407.0" mnemonicParsing="false" text="Start" onAction="#buttonAction" />
+            <Button fx:id="start" layoutX="79.0" layoutY="407.0" mnemonicParsing="false" onAction="#buttonAction" text="Start" />
+            <Text fx:id="scoreField" layoutX="85.0" layoutY="77.0" />
          </children>
       </Pane>
       <GridPane fx:id="gamePane" gridLinesVisible="true" minHeight="714.0" minWidth="0.0">

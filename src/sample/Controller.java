@@ -11,6 +11,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -29,6 +31,12 @@ public class Controller implements Initializable {
 
     @FXML
     private Button right;
+
+    @FXML
+    private Text scoreField;
+
+    @FXML
+    private GridPane nextBlockPane;
 
 
     @FXML
@@ -51,11 +59,14 @@ public class Controller implements Initializable {
     final static int maxR = 20;
     final static int maxC = 9;
 
-    protected char[][]figur = new char[3][2];
+    protected char[][]figur;
+    protected char[][]nextFig;
 
     protected  int rotation = 0;
 
     protected boolean spielfigurIstBeweglich = true;
+
+    int score = 0;
 
 
 
@@ -65,8 +76,12 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initializeField();
-        createNewFigurine();
+        figur = randomizedFig();
+        placeNewFigurine();
         drawField(field);
+        scoreField.setText(String.valueOf(score));
+        nextFig = randomizedFig();
+        drawNext();
         registerKeyboardHandler(gamePane);
     }
 
@@ -75,27 +90,31 @@ public class Controller implements Initializable {
             @Override
             public void handle(KeyEvent keyEvent) {
                 boolean consumed = false;
+                if(!spielfigurIstBeweglich){
+                    loescheAlleVolleZeilen();
+                    scoreField.setText((String.valueOf(score)));
+                    drawField(field);
+                    figur = nextFig;
+                    placeNewFigurine();
+                    drawField(field);
+                    nextFig = randomizedFig();
+                    drawNext();
+                    spielfigurIstBeweglich = true;
+                }
 
                 switch (keyEvent.getCode()) {
                     case DOWN:
-                        if(!spielfigurIstBeweglich){
-                            createNewFigurine();
-                            spielfigurIstBeweglich=true;
-                        }
                         System.out.println("Key Pressed: " + keyEvent.getCode());
                         bewegeSpielfigurKomplett("DOWN");
-                        obersteZeileMitLeerzeichenFuellen();
                         consumed = true;
                         break;
                     case LEFT:
-                        if(!spielfigurIstBeweglich)createNewFigurine();
                         System.out.println("Key Pressed: " + keyEvent.getCode());
                         bewegeSpielfigurKomplett("LEFT");
                         //evenT("LEFT");
                         consumed = true;
                         break;
                     case RIGHT:
-                        if(!spielfigurIstBeweglich)createNewFigurine();
                         System.out.println("Key Pressed: " + keyEvent.getCode());
                         bewegeSpielfigurKomplett("RIGHT");
                         //evenT("RIGHT");
@@ -109,7 +128,6 @@ public class Controller implements Initializable {
                         break;
 
                     case Q:
-                        if(!spielfigurIstBeweglich)createNewFigurine();
                         System.out.println("Key Pressed: " + keyEvent.getCode());
                         bewegeSpielfigurKomplett("Q");
                         //evenT("Q");
@@ -131,27 +149,85 @@ public class Controller implements Initializable {
                     default:
                         break;
                 }
-/*
-                System.out.println("--------------------------------");
-                for(int y=0;y<field.length;y++){
-                    System.out.println();
-                    for(int x=0;x<field[0].length;x++){
-                        System.out.print(field[y][x]);
-                    }
-                }
-*/
 
                 if (consumed) {
                     keyEvent.consume();
                 }
-                loescheAlleVolleZeilen();
+
                 printFieldToConsole();
                 drawField(field);
             }
         });
         pane.setFocusTraversable(true);
+        System.out.println("test");
     }
 
+    private void drawNext(){
+        nextBlockPane.getChildren().clear();
+        Rectangle rectangle;
+        for(int y=0;y<nextFig.length;y++){
+            for(int x=0;x<nextFig[0].length;x++){
+                switch(nextFig[y][x]) {
+                    case 'T':
+                        rectangle = new Rectangle(29, 29, Color.PURPLE);
+                        rectangle.setStroke(Color.BLACK);
+                        rectangle.setArcWidth(10.0);
+                        rectangle.setArcHeight(10.0);
+
+                        break;
+                    case 'I':
+                        rectangle = new Rectangle(29, 29, Color.DEEPSKYBLUE);
+                        rectangle.setStroke(Color.BLACK);
+                        rectangle.setArcWidth(10.0);
+                        rectangle.setArcHeight(10.0);
+
+                        break;
+                    case 'O':
+                        rectangle = new Rectangle(29, 29, Color.YELLOW);
+                        rectangle.setStroke(Color.BLACK);
+                        rectangle.setArcWidth(10.0);
+                        rectangle.setArcHeight(10.0);
+
+                        break;
+                    case 'S':
+                        rectangle = new Rectangle(29, 29, Color.GREEN);
+                        rectangle.setStroke(Color.BLACK);
+                        rectangle.setArcWidth(10.0);
+                        rectangle.setArcHeight(10.0);
+
+                        break;
+                    case 'Z':
+                        rectangle = new Rectangle(29, 29, Color.RED);
+                        rectangle.setStroke(Color.BLACK);
+                        rectangle.setArcWidth(10.0);
+                        rectangle.setArcHeight(10.0);
+
+                        break;
+                    case 'J':
+                        rectangle = new Rectangle(29, 29, Color.BLUE);
+                        rectangle.setStroke(Color.BLACK);
+                        rectangle.setArcWidth(10.0);
+                        rectangle.setArcHeight(10.0);
+
+                        break;
+                    case 'L':
+                        rectangle = new Rectangle(29, 29, Color.ORANGE);
+                        rectangle.setStroke(Color.BLACK);
+                        rectangle.setArcWidth(10.0);
+                        rectangle.setArcHeight(10.0);
+
+                        break;
+
+                    default:
+                        rectangle = new Rectangle();
+                        break;
+                }
+                GridPane.setRowIndex(rectangle, y);
+                GridPane.setColumnIndex(rectangle, x);
+                nextBlockPane.getChildren().addAll(rectangle);
+            }
+        }
+    }
 
     public void drawField(char[][] _field){
         clearField();
@@ -174,7 +250,7 @@ public class Controller implements Initializable {
 
                 break;
             case 'I':
-                rectangle = new Rectangle(33,33,Color.SKYBLUE);
+                rectangle = new Rectangle(33,33,Color.DEEPSKYBLUE);
                 rectangle.setStroke(Color.BLACK);
                 rectangle.setArcWidth(10.0);
                 rectangle.setArcHeight(10.0);
@@ -250,12 +326,10 @@ public class Controller implements Initializable {
         }
     }
 
-    protected void createNewFigurine(){
+    protected void placeNewFigurine(){
         posY = 0;
         posX = 3;
-
-        figur = randomizedFig();
-
+        rotation = 0;
 
         for (int y = 0; y < figur.length; y++) {
             for (int x = 0; x < figur[y].length; x++) {
@@ -353,7 +427,7 @@ public class Controller implements Initializable {
                char pixelWert=figur[y][x];
                 // passing the char of that pixel over to next function
                 if(pixelwertIstUebertragbar(pixelWert)){
-                    this.uebertragePixelWertInsSpielfeld(y,x,figur[y][x]);
+                    uebertragePixelWertInsSpielfeld(y,x,figur[y][x]);
                 }
             }
         }
@@ -409,6 +483,7 @@ public class Controller implements Initializable {
                 // nicht mehr beweglich
                 spielfigurIstBeweglich = false;
 
+
             else
                 // oder es bei einer gültigen Position eine Kollision im
                 // Spielfeld gibt.
@@ -416,6 +491,7 @@ public class Controller implements Initializable {
                     // wenn verschieben nach unten nicht mehr möglich ist, ist der Stein
                     // nicht mehr beweglich
                     spielfigurIstBeweglich = false;
+
 
         // sonst ist weiteres Verschieben erlaubt.
 
@@ -428,8 +504,8 @@ public class Controller implements Initializable {
             for(int x=0;x<figur[y].length;x++){
                 //char of current pixel
                 char pixelWert=figur[y][x];
-                if(this.pixelwertIstUebertragbar(pixelWert)){
-                    if( this.pixelWertKollidiertImSpielfeld(y,x)){
+                if(pixelwertIstUebertragbar(pixelWert)){
+                    if( pixelWertKollidiertImSpielfeld(y,x)){
                         return true;
                     }
                 }
@@ -494,7 +570,7 @@ public class Controller implements Initializable {
     }
 
     boolean pixelWertKollidiertAn(int zeile, int spalte){
-        return  this.field[zeile][spalte] != ' ';
+        return  field[zeile][spalte] != ' ';
     }
 
     void bewegeSpielfigurEinfach(String input){
@@ -532,7 +608,7 @@ public class Controller implements Initializable {
                 char pixelWert=figur[y][x];
                 // passing the char of that pixel over to next function
                 if(pixelwertIstUebertragbar(pixelWert)){
-                    this.uebertragePixelWertInsSpielfeld(y,x,' ');
+                    uebertragePixelWertInsSpielfeld(y,x,' ');
                 }
             }
         }
@@ -575,25 +651,31 @@ public class Controller implements Initializable {
     }
 
     void loescheAlleVolleZeilen() {
+        int deletedLines = 0;
         // Über alle Zeilen iterieren
-        for (int zeile = 0; zeile < this.field.length; zeile++) {
+        for (int y = 0; y < field.length; y++) {
 
             // wenn Zeile voll ist
-            if (this.zeileIstVoll(zeile))
-
+            if (zeileIstVoll(y)) {
+                deletedLines++;
                 // Zeile löschen
-                this.loescheZeile(zeile);
+                loescheZeile(y);
+            }
         }
+        if(deletedLines ==1 ) score += 100;
+        else if(deletedLines ==2)score +=400;
+        else if(deletedLines ==3)score +=900;
+        else if(deletedLines ==4)score+=2000;
     }
 
     void loescheZeile(int _zeile) {
 
         // zuerst jede über der zu löschenden Zeile liegenden Zeile
         // in die jeweils darunter liegende Zeile kopieren
-        this.kopiereAlleZeilenNachUntenAb(_zeile);
+        kopiereAlleZeilenNachUntenAb(_zeile);
 
         // danach die oberste Zeile voller Leerzeichen schreiben
-        this.obersteZeileMitLeerzeichenFuellen();
+        obersteZeileMitLeerzeichenFuellen();
     }
 
     private void kopiereZeile(int _zeile) {
@@ -602,10 +684,10 @@ public class Controller implements Initializable {
         // Zeile aus der nächst kleineren Zeile.
         // Über alle Spalten des Arrays iterieren, die sich in der betreffenden
         // Zeile und bzw. darunter befinden.
-        for (int spalte = 0; spalte < this.field[_zeile].length; spalte++)
+        for (int spalte = 0; spalte < field[_zeile].length; spalte++)
 
             // Wert kopieren
-            this.field[_zeile][spalte] = field[_zeile - 1][spalte];
+            field[_zeile][spalte] = field[_zeile - 1][spalte];
     }
 
     private void kopiereAlleZeilenNachUntenAb(int _zeile) {
@@ -615,16 +697,16 @@ public class Controller implements Initializable {
         for (int  zeile = _zeile; zeile > 0; zeile--)
 
             // Zeile kopieren
-            this.kopiereZeile(zeile);
+            kopiereZeile(zeile);
     }
 
     private void obersteZeileMitLeerzeichenFuellen() {
 
         // Ã¼ber alle Spalten der obersten Zeile iterieren
-        for (int spalte = 0; spalte < this.field[0].length; spalte++) {
+        for (int spalte = 0; spalte < field[0].length; spalte++) {
 
             // Feld mit Leerzeichen füllen
-            this.field[0][spalte] = ' ';
+            field[0][spalte] = ' ';
         }
     }
 
@@ -660,9 +742,9 @@ public class Controller implements Initializable {
     }
 
     void initializeField(){
-        for(int z=0;z<this.field.length;z++){
-            for(int s=0;s<this.field[z].length;s++){
-                this.field[z][s] = ' ';
+        for(int z=0;z<field.length;z++){
+            for(int s=0;s<field[z].length;s++){
+                field[z][s] = ' ';
             }
         }
     }
